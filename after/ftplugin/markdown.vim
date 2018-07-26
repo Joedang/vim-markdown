@@ -25,6 +25,7 @@ function! Foldtext_markdown()
 	return line . ' ' . repeat("-", fillcharcount) . ' ' . foldedlinecount
 endfunction
 
+" ~~~~ pythonic style of folding ~~~~
 function! Foldexpr_markdown_pythonic(lnum)
 	let l1 = getline(a:lnum)
 	"~~ keep track of fenced code blocks ~~
@@ -36,6 +37,8 @@ function! Foldexpr_markdown_pythonic(lnum)
 		elseif b:fenced_block == 1
 			let b:fenced_block = 0
 		endif
+
+	" ~~ keep track of front matter ~~
 	" else, if we're caring about front matter
 	elseif g:vim_markdown_frontmatter == 1
 		" if we're in front matter and after line 2
@@ -60,7 +63,6 @@ function! Foldexpr_markdown_pythonic(lnum)
 	if b:fenced_block == 1 || b:front_matter == 1
 		if a:lnum == 1
 			" fold any 'preamble'
-			echom 'Im still in the front matter.'
 			return '>1'
 		else
 			" keep previous foldlevel
@@ -97,6 +99,7 @@ function! Foldexpr_markdown_pythonic(lnum)
 	endif
 endfunction
 
+" ~~~~ non-pythonic style of folding ~~~~
 function! Foldexpr_markdown_plain(lnum)
 	if (a:lnum == 1)
 		let l0 = ''
@@ -169,13 +172,11 @@ endfunction
 " if we're using pythonic folding (default to no)
 if get(g:, "vim_markdown_folding_style_pythonic", 0)
 	" vim_markdown_folding_style_pythonic == 1
-	echom 'using pythonic folding'
 	function! Foldexpr_markdown(lnum)
 		return Foldexpr_markdown_pythonic(a:lnum)
 	endfunction
 else 
 	" vim_markdown_folding_style_pythonic == 0
-	echom 'using pythonic folding'
 	function! Foldexpr_markdown(lnum)
 		return Foldexpr_markdown_plain(a:lnum)
 	endfunction
